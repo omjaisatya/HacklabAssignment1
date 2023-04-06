@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Traffic Light FSM Demo</title>
+    <style>
+      button {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin: 10px;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Traffic Light FSM Demo</h1>
+    <div>
+      <button id="red-button"></button>
+      <!-- <button id="yellow-button"></button> -->
+      <button id="green-button"></button>
+      <button id="yellow-button"></button>
+
+    </div>
+    <script>
+      const states = {
+        RED: { name: "Red", duration: 20000, next: "GREEN" },
+        GREEN: { name: "Green", duration: 15000, next: "YELLOW" },
+        YELLOW: { name: "Yellow", duration: 5000, next: "RED" },
+      };
+
+      let currentState = states.RED;
+
+      const redButton = document.querySelector("#red-button");
+      const greenButton = document.querySelector("#green-button");
+      const yellowButton = document.querySelector("#yellow-button");
+
+      function startTimer() {
+        setTimeout(() => {
+          updateState(states[currentState.next]);
+          startTimer();
+        }, currentState.duration);
+      }
+
+      function updateState(newState, force = false) {
+        if (!force && !isValidTransition(currentState, newState)) {
+          return;
+        }
+
+        currentState = newState;
+
+        redButton.style.backgroundColor = currentState === states.RED ? "red" : "black";
+        greenButton.style.backgroundColor = currentState === states.GREEN ? "green" : "black";
+        yellowButton.style.backgroundColor = currentState === states.YELLOW ? "yellow" : "black";
+      }
+
+      function isValidTransition(currentState, newState) {
+        const validTransitions = {
+          [states.RED]: [states.GREEN],
+          [states.GREEN]: [states.YELLOW],
+          [states.YELLOW]: [states.RED, states.GREEN],
+        };
+
+        return validTransitions[currentState].includes(newState);
+      }
+
+      redButton.addEventListener("click", () => {
+        updateState(states.RED, true);
+      });
+
+      greenButton.addEventListener("click", () => {
+        updateState(states.GREEN, true);
+      });
+
+      yellowButton.addEventListener("click", () => {
+        updateState(states.YELLOW, true);
+      });
+
+      startTimer();
+    </script>
+  </body>
+</html>
