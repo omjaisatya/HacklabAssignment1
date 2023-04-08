@@ -42,7 +42,7 @@
         }, currentState.duration);
       }
 
-      function updateState(newState, force = false) {
+      function updateState(newState, force = true) {
         if (!force && !isValidTransition(currentState, newState)) {
           return;
         }
